@@ -1,4 +1,3 @@
-// const { JWT_SECRET } = require("../secrets");
 const User = require('../users/users-model')
 const jwt = require('jsonwebtoken');
 
@@ -27,7 +26,7 @@ const checkUsernameFree = async (req, res, next) => {
     try {
       const users = await User.findBy({ username: req.body.username })
       if(users.length !== 0) {
-        req.user = users[0]
+        req.existingUser = users[0]
         next()
       } else {
         next({ message: "invalid credentials", status: 401 })
