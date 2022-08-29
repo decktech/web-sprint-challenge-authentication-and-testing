@@ -1,10 +1,12 @@
-const { JWT_SECRET } = require("../secrets"); // use this secret!
-const User = require()
+// const { JWT_SECRET } = require("../secrets");
+const User = require('../users/users-model')
 const jwt = require('jsonwebtoken');
 
 const validateUsernamePassword = (req, res, next) => {
-    if (!req.body.username || !req.body.username.trim()) {
-        req.username 
+    if (req.body.username == null || req.body.password == null) {
+      next({ status: 401, message: 'username and password required' }) 
+    } else {
+      next()
     }
 }
 
@@ -14,7 +16,7 @@ const checkUsernameFree = async (req, res, next) => {
       if(users.length === 0) {
         next()
       } else {
-        next({ message: "Username taken", status: 422 })
+        next({ message: "username taken", status: 401 })
       }
     } catch (err) {
       next(err)
@@ -28,9 +30,15 @@ const checkUsernameFree = async (req, res, next) => {
         req.user = users[0]
         next()
       } else {
-        next({ message: "Invalid credentials", status: 401 })
+        next({ message: "invalid credentials", status: 401 })
       }
     } catch (err) {
       next(err)
     }
+  }
+
+  module.exports = {
+    checkUsernameFree,
+    checkUsernameExists,
+    validateUsernamePassword
   }
